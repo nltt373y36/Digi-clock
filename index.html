@@ -7,11 +7,13 @@
     <title>Digital Night Clock</title>
     
     <!-- PWA MANIFEST METADATA (Replaces manifest.json) -->
-    <!-- The "standalone" mode triggers the app-like fullscreen display -->
+    <!-- These lines signal to the browser that this is an installable app -->
     <meta name="application-name" content="DigiClock">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DigiClock">
 
     <!-- Embedded Icon (Simple Digital Watch SVG, Base64 Encoded) -->
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzAwMDAwMCIvPiA8cmVjdCB4PSIxMjAiIHk9IjIwMCIgd2lkdGg9IjI3MiIgaGVpZ2h0PSIxMTIiIGZpbGw9IiM4MDgwODAiLz4gPHRleHQgeD0iMjU2IiB5PSIyNzAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IiMwMDAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjAwOjAwPC90ZXh0PiA8L3N2Zz4=" sizes="512x512">
@@ -195,7 +197,7 @@
         </div>
     </div>
 
-    <!-- JavaScript for Clock Logic -->
+    <!-- JavaScript for Clock Logic and PWA Registration -->
     <script>
         // --- DOM Elements ---
         const timeDisplay = document.getElementById('time-display');
@@ -390,9 +392,28 @@
         updateTime();
         setInterval(updateTime, 100);
 
-    </script>
 
-</body>
-</html>
+        // --- PWA Service Worker (Embedded Logic) ---
+        // This script creates a Service Worker on the fly (a Data URL) and registers it.
+        // This satisfies the PWA requirement for a Service Worker without needing a separate file.
+        const serviceWorkerScript = `
+            const CACHE_NAME = 'digiclock-v1-single';
+            const urlsToCache = [
+                '/',
+                'index.html'
+            ];
+            
+            self.addEventListener('install', event => {
+                event.waitUntil(
+                    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                );
+            });
 
-      
+            self.addEventListener('fetch', event => {
+                event.respondWith(
+                    caches.match(event.request).then(response => {
+                        return response || fetch(event.request);
+                    })
+                );
+            });
+    
