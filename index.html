@@ -12,7 +12,7 @@
         }
 
         body {
-            background-color: #000000;
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -75,8 +75,8 @@
 
         .settings-panel {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 50%;
+            left: 50%;
             width: 1000px;
             height: 500px;
             background: #000000;
@@ -84,9 +84,6 @@
             overflow-y: auto;
             z-index: 200;
             display: none;
-            margin: auto;
-            left: 50%;
-            top: 50%;
             transform: translate(-50%, -50%);
         }
 
@@ -249,7 +246,14 @@
         <p>Flip your device to view the page content</p>
     </div>
 
-    <button class="settings-btn" id="settingsBtn">⚙</button>
+    <div class="page-container">
+        <button class="settings-btn" id="settingsBtn">⚙</button>
+        
+        <div class="clock-container">
+            <div class="time" id="time"></div>
+            <div class="date" id="date"></div>
+        </div>
+    </div>
     
     <div class="overlay" id="overlay"></div>
     
@@ -311,11 +315,6 @@
             </div>
         </div>
     </div>
-    
-    <div class="clock-container">
-        <div class="time" id="time"></div>
-        <div class="date" id="date"></div>
-    </div>
 
     <script>
         let showSeconds = false;
@@ -374,4 +373,4 @@
         setInterval(updateClock, 1000);
     </script>
 </body>
-</html>
+    </html>
